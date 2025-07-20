@@ -1,1 +1,1 @@
-bucket_name="dev-sa-east-1-buildrun-desafio-vw"
+bucket_name="dev-s3-bucket-desafio-vw-imags"
