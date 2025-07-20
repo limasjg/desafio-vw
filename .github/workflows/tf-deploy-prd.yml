@@ -1,9 +1,12 @@
 name: "Deploy terraform Prd"
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
+    tags:
+      - "v*infra"
 
 permissions:
   id-token: write
