@@ -1,4 +1,4 @@
-name: "DEV DEPLOY"
+name: "Deploy terraform Dev"
 
 on:
   push:
