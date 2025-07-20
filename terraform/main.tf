@@ -1,0 +1,1 @@
+# Arquivo principal - reservado para orquestração de módulos
