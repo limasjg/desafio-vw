@@ -1,1 +1,3 @@
-bucket_name="dev-s3-bucket-desafio-vw-imags"
+env="dev"
+
+bucket_name="s3-bucket-desafio-vw-imags-dev"

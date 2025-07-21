@@ -1,10 +1,14 @@
+variable "env" {
+  description = "O ambiente de deploy (ex: dev, prd)."
+  type        = string
+}
 variable "bucket_name" {
   type = string
 }
 variable "aws_region" {
   description = "Região da AWS para deploy."
   type        = string
-  default     = "us-east-1"
+  default     = "sa-east-1"
 }
 
 variable "vpc_cidr" {

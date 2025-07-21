@@ -1,10 +1,15 @@
+# networking.tf
+
 # Internet Gateway para a VPC ter acesso à internet
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main.id
 
-  tags = {
-    Name = "igw-desafio-vw"
-  }
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "igw-desafio-vw-${var.env}"
+    }
+  )
 }
 
 # Tabela de Rota Pública: direciona todo tráfego (0.0.0.0/0) para o Internet Gateway
@@ -16,9 +21,12 @@ resource "aws_route_table" "public" {
     gateway_id = aws_internet_gateway.igw.id
   }
 
-  tags = {
-    Name = "rt-public"
-  }
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "rt-public-${var.env}"
+    }
+  )
 }
 
 # Associa a tabela de rota pública com as subnets públicas
@@ -28,21 +36,31 @@ resource "aws_route_table_association" "public" {
   route_table_id = aws_route_table.public.id
 }
 
-# Elastic IP para o NAT Gateway (necessário para ele ter um IP fixo)
+# Elastic IP para o NAT Gateway (necessário para ele ter um IP fixo na internet)
 resource "aws_eip" "nat" {
   domain = "vpc"
+  
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "eip-nat-${var.env}"
+    }
+  )
 }
 
-# NAT Gateway: permite que recursos na subnet privada acessem a internet (ex: para updates)
-# sem serem acessíveis externamente. Coloquei na primeira subnet pública.
+# NAT Gateway: permite que recursos na subnet privada acessem a internet
+# Colocamos ele na primeira subnet pública disponível.
 resource "aws_nat_gateway" "nat" {
   allocation_id = aws_eip.nat.id
   subnet_id     = aws_subnet.public[0].id
   depends_on    = [aws_internet_gateway.igw]
 
-  tags = {
-    Name = "nat-desafio-vw"
-  }
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "nat-desafio-vw-${var.env}"
+    }
+  )
 }
 
 # Tabela de Rota Privada: direciona todo tráfego para o NAT Gateway
@@ -54,9 +72,12 @@ resource "aws_route_table" "private" {
     nat_gateway_id = aws_nat_gateway.nat.id
   }
 
-  tags = {
-    Name = "rt-private"
-  }
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "rt-private-${var.env}"
+    }
+  )
 }
 
 # Associa a tabela de rota privada com as subnets privadas

@@ -1,1 +1,3 @@
-bucket_name="prd-sa-east-1-buildrun-desafio-vw"
+env="prd"
+
+bucket_name="s3-bucket-desafio-vw-imags-dev"
