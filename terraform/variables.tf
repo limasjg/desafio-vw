@@ -52,7 +52,7 @@ variable "db_instance_class" {
 variable "db_allocated_storage" {
   description = "Armazenamento alocado para o RDS em GB."
   type        = number
-  default     = 1
+  default     = 20
 }
 
 variable "db_username" {
