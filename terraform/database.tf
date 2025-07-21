@@ -17,11 +17,11 @@ resource "aws_db_subnet_group" "rds_subnet_group" {
 
 # Instância do banco de dados PostgreSQL
 resource "aws_db_instance" "postgres" {
-  # O 'identifier' é o nome único do RDS na sua conta AWS para esta região.
+
   identifier = "rds-postgres-desafio-vw-${var.env}"
 
   engine               = "postgres"
-  engine_version       = "15.3" # Recomendo verificar a última versão LTS disponível
+  engine_version       = "16.9"
   instance_class       = var.db_instance_class
   allocated_storage    = var.db_allocated_storage
   
