@@ -15,6 +15,10 @@ on:
         required: true
       aws-lock-dynamodb-table:
         required: true
+      db-username:
+        required: true
+      db-password:
+        required: true  
 
 jobs:
   terraform:
@@ -22,6 +26,10 @@ jobs:
     defaults:
       run:
         shell: bash
+
+    env:
+      TF_VAR_db_username: ${{ secrets.db-username }}
+      TF_VAR_db_password: ${{ secrets.db-password }}
 
     steps:
       - name: Checkout code

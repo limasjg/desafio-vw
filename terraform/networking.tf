@@ -49,7 +49,7 @@ resource "aws_eip" "nat" {
 }
 
 # NAT Gateway: permite que recursos na subnet privada acessem a internet
-# Colocamos ele na primeira subnet pública disponível.
+# Coloquei ele na primeira subnet pública disponível.
 resource "aws_nat_gateway" "nat" {
   allocation_id = aws_eip.nat.id
   subnet_id     = aws_subnet.public[0].id
