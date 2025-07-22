@@ -49,7 +49,7 @@ jobs:
       - name: Download task definition
         id: download-task-def
         run: |
-          TASK_DEF_FAMILY="task-def-family-${{ env.ENVIRONMENT }}"
+          TASK_DEF_FAMILY="api-task-${{ env.ENVIRONMENT }}"
           echo "TASK_DEF_FAMILY=${TASK_DEF_FAMILY}" >> $GITHUB_ENV
           aws ecs describe-task-definition --task-definition ${TASK_DEF_FAMILY} --query taskDefinition > task-definition.json
 
