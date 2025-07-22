@@ -13,7 +13,7 @@ resource "aws_db_subnet_group" "rds_subnet_group" {
     }
   )
 }
-
+/*
 # Instância do banco de dados PostgreSQL
 resource "aws_db_instance" "postgres" {
 
@@ -45,3 +45,4 @@ resource "aws_db_instance" "postgres" {
     }
   )
 }
+*/
