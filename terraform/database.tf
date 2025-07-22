@@ -30,11 +30,11 @@ resource "aws_db_instance" "postgres" {
   db_subnet_group_name   = aws_db_subnet_group.rds_subnet_group.name
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
 
-  multi_az               = true # Habilita alta disponibilidade, criando um standby em outra AZ
-  skip_final_snapshot    = true # Em 'dev' pode ser true. Em 'prd', mude para 'false'.
+  multi_az               = false # Habilita alta disponibilidade, criando um standby em outra AZ
+  skip_final_snapshot    = true # Em 'dev' pode ser true. Em 'prd', 'false'.
   
   # Habilita a proteção contra exclusão acidental. Importante para produção.
-  deletion_protection    = false # Em 'prd', mude para 'true'.
+  deletion_protection    = false # Em 'prd', tem que ser 'true'.
 
   tags = merge(
     local.common_tags,

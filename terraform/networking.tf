@@ -34,41 +34,8 @@ resource "aws_route_table_association" "public" {
   route_table_id = aws_route_table.public.id
 }
 
-# Elastic IP para o NAT Gateway (necessário para ele ter um IP fixo na internet)
-resource "aws_eip" "nat" {
-  domain = "vpc"
-  
-  tags = merge(
-    local.common_tags,
-    {
-      Name = "eip-nat-${var.env}"
-    }
-  )
-}
-
-# NAT Gateway: permite que recursos na subnet privada acessem a internet
-# Coloquei ele na primeira subnet pública disponível.
-resource "aws_nat_gateway" "nat" {
-  allocation_id = aws_eip.nat.id
-  subnet_id     = aws_subnet.public[0].id
-  depends_on    = [aws_internet_gateway.igw]
-
-  tags = merge(
-    local.common_tags,
-    {
-      Name = "nat-desafio-vw-${var.env}"
-    }
-  )
-}
-
-# Tabela de Rota Privada: direciona todo tráfego para o NAT Gateway
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.main.id
-
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.nat.id
-  }
 
   tags = merge(
     local.common_tags,
