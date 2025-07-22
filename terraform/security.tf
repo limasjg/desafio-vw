@@ -80,7 +80,7 @@ resource "aws_security_group_rule" "local_dev_access_to_rds" {
   
   # SUBSTITUA O IP ABAIXO PELO SEU IP PÚBLICO
   # Não se esqueça de adicionar o /32 no final.
-  cidr_blocks       = ["177.1.32.127/32"] 
+  cidr_blocks       = ["193.186.4.193/32"] 
   
   security_group_id = aws_security_group.rds_sg.id
   description       = "Permite acesso do IP do desenvolvedor para o RDS"
