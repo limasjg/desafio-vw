@@ -3,7 +3,7 @@
 # para garantir alta disponibilidade.
 resource "aws_db_subnet_group" "rds_subnet_group" {
   name       = "sng-rds-${var.env}"
-  subnet_ids = [for subnet in aws_subnet.private : subnet.id]
+  subnet_ids = [for subnet in aws_subnet.public : subnet.id]
 
   tags = merge(
     local.common_tags,
