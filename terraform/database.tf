@@ -3,6 +3,7 @@
 # para garantir alta disponibilidade.
 resource "aws_db_subnet_group" "rds_subnet_group" {
   name       = "sng-rds-${var.env}"
+
   subnet_ids = [for subnet in aws_subnet.public : subnet.id]
 
   tags = merge(
@@ -27,7 +28,7 @@ resource "aws_db_instance" "postgres" {
   username             = var.db_username
   password             = var.db_password
 
-  db_subnet_group_name   = aws_db_subnet_group.rds_subnet_group.name
+  #db_subnet_group_name   = aws_db_subnet_group.rds_subnet_group.name
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
 
   multi_az               = false # Habilita alta disponibilidade, criando um standby em outra AZ
