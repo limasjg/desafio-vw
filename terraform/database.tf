@@ -13,7 +13,7 @@ resource "aws_db_subnet_group" "rds_subnet_group" {
     }
   )
 }
-/*
+
 # Instância do banco de dados PostgreSQL
 resource "aws_db_instance" "postgres" {
 
@@ -28,12 +28,11 @@ resource "aws_db_instance" "postgres" {
   username             = var.db_username
   password             = var.db_password
 
-  #db_subnet_group_name   = aws_db_subnet_group.rds_subnet_group.name
+  db_subnet_group_name   = aws_db_subnet_group.rds_subnet_group.name
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
 
   multi_az               = false # Habilita alta disponibilidade, criando um standby em outra AZ
   skip_final_snapshot    = true # Em 'dev' pode ser true. Em 'prd', 'false'.
-  # Habilita a proteção contra exclusão acidental. Importante para produção.
   deletion_protection    = false # Em 'prd', tem que ser 'true'.
   publicly_accessible = true # Aplicar apenas para testar dev
 
@@ -45,4 +44,3 @@ resource "aws_db_instance" "postgres" {
     }
   )
 }
-*/
