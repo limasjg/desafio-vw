@@ -1,5 +1,3 @@
-# database.tf
-
 # Grupo de subnets para o RDS.
 # O RDS usa este grupo para saber em quais subnets privadas ele pode ser colocado
 # para garantir alta disponibilidade.

@@ -1,5 +1,3 @@
-# networking.tf
-
 # Internet Gateway para a VPC ter acesso à internet
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main.id

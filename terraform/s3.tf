@@ -1,6 +1,6 @@
+
 resource "aws_s3_bucket" "main" {
   bucket = var.bucket_name
-  # Adicione outras configurações do bucket se necessário
 }
 
 resource "aws_vpc_endpoint" "s3" {
