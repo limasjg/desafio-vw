@@ -1,16 +1,14 @@
-name: "Deploy API to ECS"
+name: "Build, Push and Deploy API to ECS"
 
 on:
   workflow_dispatch:
   push:
     tags:
-      - 'v*'
+      - 'v*' # Dispara o pipeline em tags como v1.0.0, v1.2.3, etc.
 
 env:
-  # Substitua 'dev' pelo nome do seu ambiente, se for diferente.
-  # Isso deve corresponder ao 'var.env' do seu Terraform.
-  ENVIRONMENT: "dev" 
-  AWS_REGION: "us-east-1" # Substitua pela sua região da AWS
+  ENVIRONMENT: "dev"
+  AWS_REGION: "sa-east-1"
 
 permissions:
   id-token: write
@@ -20,7 +18,7 @@ jobs:
   deploy:
     name: Build, Push and Deploy
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -29,7 +27,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ASSUME_ROLE_ARN }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -38,28 +36,31 @@ jobs:
       - name: Define ECR repository and image tag
         id: ecr-meta
         run: |
-          ECR_REPOSITORY_NAME="ecr-repo-${{ env.ENVIRONMENT }}"
-          IMAGE_NAME="${{ github.event.repository.name }}/${ECR_REPOSITORY_NAME}"
+          ECR_REPOSITORY="ecr-repo-${{ env.ENVIRONMENT }}"
           IMAGE_TAG="${{ github.ref_name }}"
-          
-          echo "ECR_REPOSITORY_NAME=${ECR_REPOSITORY_NAME}" >> $GITHUB_ENV
-          echo "IMAGE_NAME=${IMAGE_NAME}" >> $GITHUB_ENV
+          echo "ECR_REPOSITORY=${ECR_REPOSITORY}" >> $GITHUB_ENV
           echo "IMAGE_TAG=${IMAGE_TAG}" >> $GITHUB_ENV
 
-      - name: Download task definition
-        id: download-task-def
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          TASK_DEF_FAMILY="api-task-${{ env.ENVIRONMENT }}"
-          echo "TASK_DEF_FAMILY=${TASK_DEF_FAMILY}" >> $GITHUB_ENV
-          aws ecs describe-task-definition --task-definition ${TASK_DEF_FAMILY} --query taskDefinition > task-definition.json
+          docker build -t $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }} .
+          docker push $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+          echo "image=$ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}" >> $GITHUB_OUTPUT
+
+      - name: Download task definition
+        run: |
+          aws ecs describe-task-definition --task-definition "api-task-${{ env.ENVIRONMENT }}" --query taskDefinition > task-definition.json
 
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: render-task-definition
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: task-definition.json
-          container-name: "api-container"
-          image: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          container-name: "api-container" # Nome do container na sua task definition
+          image: ${{ steps.build-image.outputs.image }}
 
       - name: Deploy Amazon ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
@@ -67,4 +68,4 @@ jobs:
           task-definition: ${{ steps.render-task-definition.outputs.task-definition }}
           service: "service-api-${{ env.ENVIRONMENT }}"
           cluster: "cluster-desafio-${{ env.ENVIRONMENT }}"
-          wait-for-service-stability: true # Espera o deploy terminar com sucesso
+          wait-for-service-stability: true # Mantém a espera para garantir o deploy
