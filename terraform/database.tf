@@ -32,9 +32,10 @@ resource "aws_db_instance" "postgres" {
 
   multi_az               = false # Habilita alta disponibilidade, criando um standby em outra AZ
   skip_final_snapshot    = true # Em 'dev' pode ser true. Em 'prd', 'false'.
-  
   # Habilita a proteção contra exclusão acidental. Importante para produção.
   deletion_protection    = false # Em 'prd', tem que ser 'true'.
+  publicly_accessible = true # Aplicar apenas para testar dev
+
 
   tags = merge(
     local.common_tags,
