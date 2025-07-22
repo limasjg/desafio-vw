@@ -4,9 +4,10 @@
 # Python cache
 __pycache__/
 *.pyc
-*.pyo
-*.pyd
 
 # Virtual environment
 venv/
 .venv/
+
+# Local storage for images
+storage/

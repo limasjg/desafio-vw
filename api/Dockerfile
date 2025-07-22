@@ -1,20 +1,29 @@
-# Estágio de build para instalar dependências de forma mais eficiente
+# Estágio de build para instalar dependências
 FROM python:3.9-slim as builder
-WORKDIR /app
+WORKDIR /code
 RUN pip install --no-cache-dir --upgrade pip
-COPY requirements.txt requirements.txt
+# Copia o requirements.txt de dentro da pasta app
+COPY ./app/requirements.txt .
 RUN pip install --no-cache-dir --user -r requirements.txt
 
-# Estágio final, mais enxuto, para produção
+# Estágio final, mais enxuto
 FROM python:3.9-slim
-WORKDIR /app
+# Define o diretório de trabalho principal
+WORKDIR /code
+
+# Copia as dependências instaladas
 COPY --from=builder /root/.local /root/.local
-COPY . .
-# Adiciona os pacotes instalados ao PATH do sistema
+
+# Copia o código da sua aplicação para DENTRO de uma pasta 'app'
+# Isso cria a estrutura /code/app/main.py, etc.
+COPY ./app /code/app
+
+# Adiciona o diretório de binários do usuário ao PATH do sistema
 ENV PATH=/root/.local/bin:$PATH
 
 # Expõe a porta que a aplicação vai usar
 EXPOSE 80
 
-# Comando para rodar a aplicação com Uvicorn
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
+# Comando para rodar a aplicação, tratando 'app' como o módulo principal
+# O Uvicorn é executado a partir de /code, então ele "vê" o pacote 'app'
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
