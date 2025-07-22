@@ -3,8 +3,8 @@ name: "Deploy terraform Prd"
 on:
   workflow_dispatch:
   push:
-    branches:
-      - main
+    # branches:
+    #   - main
     tags:
       - "v*infra"
 
