@@ -70,3 +70,18 @@ resource "aws_security_group" "rds_sg" {
     }
   )
 }
+
+# Regra temporária para permitir acesso ao RDS a partir do seu IP local para desenvolvimento (Ideal é adicionar a VPN)
+resource "aws_security_group_rule" "local_dev_access_to_rds" {
+  type              = "ingress"
+  from_port         = 5432
+  to_port           = 5432
+  protocol          = "tcp"
+  
+  # SUBSTITUA O IP ABAIXO PELO SEU IP PÚBLICO
+  # Não se esqueça de adicionar o /32 no final.
+  cidr_blocks       = ["177.1.32.127/32"] 
+  
+  security_group_id = aws_security_group.rds_sg.id
+  description       = "Permite acesso do IP do desenvolvedor para o RDS"
+}
