@@ -36,7 +36,7 @@ jobs:
       - name: Define ECR repository and image tag
         id: ecr-meta
         run: |
-          ECR_REPOSITORY="ecr-repo-${{ env.ENVIRONMENT }}"
+          ECR_REPOSITORY="ecr-desafio-vw-${{ env.ENVIRONMENT }}"
           IMAGE_TAG="${{ github.ref_name }}"
           echo "ECR_REPOSITORY=${ECR_REPOSITORY}" >> $GITHUB_ENV
           echo "IMAGE_TAG=${IMAGE_TAG}" >> $GITHUB_ENV
