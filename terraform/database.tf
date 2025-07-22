@@ -4,7 +4,7 @@
 resource "aws_db_subnet_group" "rds_subnet_group" {
   name       = "sng-rds-${var.env}"
 
-  subnet_ids = [for subnet in aws_subnet.public : subnet.id]
+  subnet_ids = [for subnet in aws_subnet.private : subnet.id]
 
   tags = merge(
     local.common_tags,
@@ -34,7 +34,7 @@ resource "aws_db_instance" "postgres" {
   multi_az               = false # Habilita alta disponibilidade, criando um standby em outra AZ
   skip_final_snapshot    = true # Em 'dev' pode ser true. Em 'prd', 'false'.
   deletion_protection    = false # Em 'prd', tem que ser 'true'.
-  publicly_accessible = true # Aplicar apenas para testar dev
+  publicly_accessible = false # Aplicar apenas para testar dev
 
 
   tags = merge(
