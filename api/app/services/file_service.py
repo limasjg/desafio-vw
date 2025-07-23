@@ -1,6 +1,6 @@
 import shutil
 from fastapi import UploadFile
-from ..config import settings # <-- Correção aqui
+from ..config import settings
 import os
 from uuid import uuid4
 

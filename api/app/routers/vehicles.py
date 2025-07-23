@@ -11,7 +11,6 @@ router = APIRouter(
     tags=["vehicles"],
 )
 
-# O resto do arquivo (endpoints) continua o mesmo...
 @router.post("/", response_model=schemas.Vehicle)
 def create_new_vehicle(
     model: str = Form(...),

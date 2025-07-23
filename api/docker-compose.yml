@@ -26,7 +26,6 @@ services:
     env_file:
       - .env
     volumes:
-      # CORREÇÃO: Mapeia a pasta 'storage' local para o caminho correto dentro do contêiner
       - ./storage:/code/app/static
     depends_on:
       db:

@@ -13,17 +13,14 @@ def upload_file_to_s3(file: UploadFile) -> str:
 
 
     file_extension = os.path.splitext(file.filename)[1]
-    # A chave do objeto é o caminho completo do arquivo no bucket
     object_key = f"vehicles/{uuid4()}{file_extension}"
 
     try:
-        # Removido o ExtraArgs que tentava definir a ACL como 'public-read'
         s3_client.upload_fileobj(
             file.file,
             settings.S3_BUCKET_NAME,
             object_key
         )
-        # A função agora retorna apenas a chave do objeto para ser salva no banco de dados
         return object_key
     except NoCredentialsError:
         logging.error("Credenciais da AWS não encontradas.")
@@ -33,7 +30,6 @@ def upload_file_to_s3(file: UploadFile) -> str:
         raise Exception(f"Erro durante o upload para o S3: {e}")
 
 
-# --- NOVA FUNÇÃO PARA GERAR URLS DE ACESSO ---
 def create_presigned_url(object_key: str, expiration: int = 3600) -> str:
 
     s3_client = boto3.client("s3", region_name=settings.AWS_REGION)
@@ -42,7 +38,7 @@ def create_presigned_url(object_key: str, expiration: int = 3600) -> str:
         url = s3_client.generate_presigned_url(
             'get_object',
             Params={'Bucket': settings.S3_BUCKET_NAME, 'Key': object_key},
-            ExpiresIn=expiration  # Tempo em segundos que a URL será válida (1 hora por padrão)
+            ExpiresIn=expiration 
         )
         return url
     except ClientError as e:
