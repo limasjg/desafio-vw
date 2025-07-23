@@ -47,3 +47,17 @@ resource "aws_cloudwatch_metric_alarm" "high_memory_alarm" {
   ok_actions    = [aws_sns_topic.alarms_topic.arn]
   tags          = local.common_tags
 }
+
+# Endpoint de Interface para o CloudWatch Logs
+resource "aws_vpc_endpoint" "logs" {
+  vpc_id              = aws_vpc.main.id
+  service_name        = "com.amazonaws.${var.aws_region}.logs"
+  vpc_endpoint_type   = "Interface"
+  private_dns_enabled = true
+
+  # Associa o endpoint às mesmas sub-redes privadas e ao mesmo security group dos outros endpoints
+  subnet_ids         = [for subnet in aws_subnet.private : subnet.id]
+  security_group_ids = [aws_security_group.vpc_endpoints_sg.id]
+
+  tags = merge(local.common_tags, { Name = "vpce-logs-${var.env}" })
+}
