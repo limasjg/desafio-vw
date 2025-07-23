@@ -70,3 +70,19 @@ resource "aws_security_group" "rds_sg" {
     }
   )
 }
+
+resource "aws_security_group" "vpc_endpoints_sg" {
+  name        = "vpc-endpoints-sg-${var.env}"
+  description = "Permite acesso da aplicação ECS aos VPC Endpoints"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    description     = "Permite HTTPS do SG da aplicação ECS"
+    from_port       = 443
+    to_port         = 443
+    protocol        = "tcp"
+    security_groups = [aws_security_group.ec2_sg.id]
+  }
+  
+  tags = merge(local.common_tags, { Name = "vpc-endpoints-sg-${var.env}" })
+}

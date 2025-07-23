@@ -58,9 +58,9 @@ resource "aws_ecs_service" "main" {
   enable_execute_command = true
 
   network_configuration {
-    subnets          = [for subnet in aws_subnet.public : subnet.id]
+    subnets          = [for subnet in aws_subnet.private : subnet.id]
     security_groups  = [aws_security_group.ec2_sg.id]
-    assign_public_ip = true 
+    assign_public_ip = false 
   }
   
   load_balancer {
