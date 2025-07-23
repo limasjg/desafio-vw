@@ -77,7 +77,7 @@ resource "aws_security_group" "vpc_endpoints_sg" {
   vpc_id      = aws_vpc.main.id
 
   ingress {
-    description     = "Permite HTTPS do SG da aplicação ECS"
+    description     = "Permite HTTPS do SG da aplicacao ECS"
     from_port       = 443
     to_port         = 443
     protocol        = "tcp"
