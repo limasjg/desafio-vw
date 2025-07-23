@@ -73,7 +73,7 @@ resource "aws_ecs_service" "main" {
   tags       = local.common_tags
 }
 
-# Define o "alvo" do auto scaling, que é o número de tarefas do seu serviço ECS
+# Auto scaling
 resource "aws_appautoscaling_target" "ecs_target" {
   max_capacity       = 4  # Defina o número máximo de tarefas que o serviço pode ter
   min_capacity       = 2  # Defina o número mínimo de tarefas que o serviço deve ter

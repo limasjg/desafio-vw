@@ -1,3 +1,3 @@
 env="prd"
 
-bucket_name="s3-bucket-desafio-vw-imags-dev"
+bucket_name="s3-bucket-desafio-vw-imags-prd"

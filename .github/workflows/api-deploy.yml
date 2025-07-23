@@ -1,10 +1,10 @@
+# Pipeline da API
+
 name: "Build, Push and Deploy API to ECS"
 
 on:
   workflow_dispatch:
   push:
-    branches:
-    - develop
     tags:
       - 'v*' # Dispara o pipeline em tags como v1.0.0, v1.2.3, etc.
 

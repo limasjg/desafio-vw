@@ -1,2 +1,9 @@
-# Aprovador
-* @limasjg
+# .github/CODEOWNERS
+
+# =============================================================================
+# Regras Gerais de Propriedade
+# =============================================================================
+
+# Por padrão, todas as alterações devem ser revisadas pela equipe de desenvolvimento principal.
+# Esta é uma boa prática para garantir uma revisão geral do código.
+# * @seu-username-ou-org/equipe-desenvolvimento
