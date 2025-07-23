@@ -6,15 +6,12 @@ import os
 from uuid import uuid4
 import logging
 
-# Crie o cliente S3 uma vez para reutilização, se possível
-s3_client = boto3.client("s3", region_name=settings.AWS_REGION)
 
-# --- FUNÇÃO DE UPLOAD ATUALIZADA ---
 def upload_file_to_s3(file: UploadFile) -> str:
-    """
-    Faz o upload de um arquivo para o S3 e retorna a chave do objeto (nome do arquivo).
-    O objeto é salvo como privado por padrão.
-    """
+
+    s3_client = boto3.client("s3", region_name=settings.AWS_REGION)
+
+
     file_extension = os.path.splitext(file.filename)[1]
     # A chave do objeto é o caminho completo do arquivo no bucket
     object_key = f"vehicles/{uuid4()}{file_extension}"
@@ -38,9 +35,9 @@ def upload_file_to_s3(file: UploadFile) -> str:
 
 # --- NOVA FUNÇÃO PARA GERAR URLS DE ACESSO ---
 def create_presigned_url(object_key: str, expiration: int = 3600) -> str:
-    """
-    Gera uma URL pré-assinada para permitir o acesso temporário a um objeto privado no S3.
-    """
+
+    s3_client = boto3.client("s3", region_name=settings.AWS_REGION)
+
     try:
         url = s3_client.generate_presigned_url(
             'get_object',
