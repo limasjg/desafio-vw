@@ -73,7 +73,7 @@ resource "aws_security_group" "rds_sg" {
 
 resource "aws_security_group" "vpc_endpoints_sg" {
   name        = "vpc-endpoints-sg-${var.env}"
-  description = "Permite acesso da aplicação ECS aos VPC Endpoints"
+  description = "Permite acesso da aplicacao ECS aos VPC Endpoints"
   vpc_id      = aws_vpc.main.id
 
   ingress {
