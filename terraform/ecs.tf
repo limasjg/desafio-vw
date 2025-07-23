@@ -72,3 +72,33 @@ resource "aws_ecs_service" "main" {
   depends_on = [aws_lb_listener.http]
   tags       = local.common_tags
 }
+
+# Define o "alvo" do auto scaling, que é o número de tarefas do seu serviço ECS
+resource "aws_appautoscaling_target" "ecs_target" {
+  max_capacity       = 4  # Defina o número máximo de tarefas que o serviço pode ter
+  min_capacity       = 2  # Defina o número mínimo de tarefas que o serviço deve ter
+  resource_id        = "service/${aws_ecs_cluster.main.name}/${aws_ecs_service.main.name}"
+  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "ecs"
+}
+
+# Define a política/regra para escalar o serviço com base no uso de CPU
+resource "aws_appautoscaling_policy" "ecs_cpu_scaling_policy" {
+  name               = "cpu-scaling-policy-${var.env}"
+  policy_type        = "TargetTrackingScaling"
+  resource_id        = aws_appautoscaling_target.ecs_target.resource_id
+  scalable_dimension = aws_appautoscaling_target.ecs_target.scalable_dimension
+  service_namespace  = aws_appautoscaling_target.ecs_target.service_namespace
+
+  target_tracking_scaling_policy_configuration {
+    # Tenta manter a utilização média de CPU do serviço em 75%
+    target_value       = 75.0
+    predefined_metric_specification {
+      predefined_metric_type = "ECSServiceAverageCPUUtilization"
+    }
+    # Tempo de espera (em segundos) antes de iniciar outra atividade de scale-out (aumentar)
+    scale_out_cooldown = 60
+    # Tempo de espera (em segundos) antes de iniciar outra atividade de scale-in (diminuir)
+    scale_in_cooldown  = 300
+  }
+}

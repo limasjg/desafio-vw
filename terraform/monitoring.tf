@@ -26,3 +26,24 @@ resource "aws_cloudwatch_metric_alarm" "high_cpu_alarm" {
   ok_actions    = [aws_sns_topic.alarms_topic.arn]
   tags          = local.common_tags
 }
+
+# Alarme de Memória
+resource "aws_cloudwatch_metric_alarm" "high_memory_alarm" {
+  alarm_name          = "High-Memory-Utilization-ECS-${var.env}"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = 2
+  metric_name         = "MemoryUtilization" # Métrica para memória
+  namespace           = "AWS/ECS"
+  period              = 120
+  statistic           = "Average"
+  threshold           = 80 # Alarma se a Memória ficar acima de 80% por 4 minutos (2 períodos de 120s)
+  
+  dimensions = {
+    ClusterName = aws_ecs_cluster.main.name
+    ServiceName = aws_ecs_service.main.name
+  }
+
+  alarm_actions = [aws_sns_topic.alarms_topic.arn]
+  ok_actions    = [aws_sns_topic.alarms_topic.arn]
+  tags          = local.common_tags
+}
