@@ -3,8 +3,6 @@ name: "Deploy terraform Dev"
 on:
   workflow_dispatch:
   push:
-    branches:
-      - develop
     tags:
       - "v*infra"
 

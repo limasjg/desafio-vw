@@ -3,6 +3,8 @@ name: "Build, Push and Deploy API to ECS"
 on:
   workflow_dispatch:
   push:
+    branches:
+    - develop
     tags:
       - 'v*' # Dispara o pipeline em tags como v1.0.0, v1.2.3, etc.
 
@@ -22,6 +24,21 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9' # Use a sua versão do Python
+
+      - name: Install Dependencies
+        working-directory: ./api/app
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Run Unit Tests
+        working-directory: ./api
+        run: pytest
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
